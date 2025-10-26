@@ -17,8 +17,7 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
     genre: '',
     description: '',
     cover_image: '',
-    pdf_url: '',
-    stock: ''
+    pdf_url: ''
   });
 
   useEffect(() => {
@@ -45,8 +44,7 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
           genre: response.data.data.genre || '',
           description: response.data.data.description || '',
           cover_image: response.data.data.cover_image || '',
-          pdf_url: response.data.data.pdf_url || '',
-          stock: response.data.data.stock || ''
+          pdf_url: response.data.data.pdf_url || ''
         });
       }
     } catch (error) {
@@ -320,20 +318,6 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
                     name="pdf_url"
                     value={editForm.pdf_url}
                     onChange={handleEditChange}
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Stok *</label>
-                  <input
-                    type="number"
-                    name="stock"
-                    value={editForm.stock}
-                    onChange={handleEditChange}
-                    min="0"
-                    required
                   />
                 </div>
               </div>

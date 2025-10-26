@@ -171,6 +171,14 @@
   font-size: 0.95rem;
 }
 
+.rating-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 2rem;
+}
+
 .detail-admin-actions {
   background: #fff3cd;
   padding: 2rem;
@@ -334,6 +342,8 @@
   font-size: 0.95rem;
   font-family: inherit;
   transition: all 0.3s;
+  background-color: #ffffff;
+  color: #2c3e50
 }
 
 .form-group input:focus,

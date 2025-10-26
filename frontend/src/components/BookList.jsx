@@ -16,6 +16,16 @@ function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '
   const [totalBooks, setTotalBooks] = useState(0);
   const [selectedBook, setSelectedBook] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+
+  // Get user role from localStorage
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      setUserRole(user.role);
+    }
+  }, []);
 
   // Update search when initialSearchQuery changes
   useEffect(() => {
@@ -189,6 +199,7 @@ function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '
               key={book.id}
               book={book}
               isAuthenticated={isAuthenticated}
+              userRole={userRole}
               onDelete={handleDelete}
               onEdit={handleEdit}
               onView={onViewBook}

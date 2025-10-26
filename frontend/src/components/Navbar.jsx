@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Navbar.css';
 
 function Navbar({ isAuthenticated, user, onNavigate, onLogout, currentPage, onCategorySelect }) {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -21,8 +22,8 @@ function Navbar({ isAuthenticated, user, onNavigate, onLogout, currentPage, onCa
     <nav className="navbar">
       <div className="navbar-brand" onClick={() => onNavigate('home')}>
         <div className="navbar-brand-text">
-          <div className="navbar-brand-title">Sistem Informasi</div>
-          <div className="navbar-brand-subtitle">Perbukuan Indonesia</div>
+          {/* <div className="navbar-brand-title">Sistem Informasi</div> */}
+          <div className="navbar-brand-subtitle">Readify.ID</div>
         </div>
       </div>
       

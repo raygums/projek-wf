@@ -1,6 +1,8 @@
 import React from 'react';
 
-function BookCard({ book, isAuthenticated, onDelete, onEdit, onView }) {
+function BookCard({ book, isAuthenticated, userRole, onDelete, onEdit, onView }) {
+  const isAdmin = userRole === 'admin';
+  
   return (
     <div className="book-card" onClick={() => onView && onView(book.id)}>
       <div className="book-image">
@@ -14,9 +16,9 @@ function BookCard({ book, isAuthenticated, onDelete, onEdit, onView }) {
         <p className="book-year">📅 {book.published_year}</p>
         {book.isbn && <p className="book-isbn">ISBN: {book.isbn}</p>}
         <div className="book-details">
-          <span className="book-stock">📦 {book.stock}</span>
+
         </div>
-        {isAuthenticated && (
+        {isAuthenticated && isAdmin && (
           <div className="book-actions" onClick={(e) => e.stopPropagation()}>
             <button className="btn btn-warning" onClick={() => onEdit(book)}>
               ✏️ Edit
