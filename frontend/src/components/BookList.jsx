@@ -3,12 +3,12 @@ import axios from 'axios';
 import './BookList.css';
 import BookCard from './BookCard';
 
-function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '', initialSearchType = 'title' }) {
+function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '', initialSearchType = 'title', initialCategory = '' }) {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(initialSearchQuery);
   const [searchType, setSearchType] = useState(initialSearchType);
-  const [genre, setGenre] = useState('');
+  const [genre, setGenre] = useState(initialCategory);
   const [genres, setGenres] = useState([]);
   const [statistics, setStatistics] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +24,13 @@ function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '
       setSearchType(initialSearchType);
     }
   }, [initialSearchQuery, initialSearchType]);
+
+  // Update genre when initialCategory changes
+  useEffect(() => {
+    if (initialCategory) {
+      setGenre(initialCategory);
+    }
+  }, [initialCategory]);
 
   useEffect(() => {
     fetchBooks();

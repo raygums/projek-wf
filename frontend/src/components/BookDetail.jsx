@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './BookDetail.css';
+import FavoriteButton from './FavoriteButton';
+import StarRating from './StarRating';
 
 function BookDetail({ bookId, onBack, isAuthenticated }) {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showReader, setShowReader] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [user, setUser] = useState(null);
   const [editForm, setEditForm] = useState({
     title: '',
     author: '',
@@ -15,12 +17,18 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
     genre: '',
     description: '',
     cover_image: '',
-    stock: '',
-    price: ''
+    pdf_url: '',
+    stock: ''
   });
 
   useEffect(() => {
     fetchBookDetail();
+    
+    // Get user data from localStorage
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
   }, [bookId]);
 
   const fetchBookDetail = async () => {
@@ -37,8 +45,8 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
           genre: response.data.data.genre || '',
           description: response.data.data.description || '',
           cover_image: response.data.data.cover_image || '',
-          stock: response.data.data.stock || '',
-          price: response.data.data.price || ''
+          pdf_url: response.data.data.pdf_url || '',
+          stock: response.data.data.stock || ''
         });
       }
     } catch (error) {
@@ -111,27 +119,6 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
     );
   }
 
-  if (showReader) {
-    return (
-      <div className="book-reader">
-        <div className="reader-header">
-          <button className="btn btn-secondary" onClick={() => setShowReader(false)}>
-            ← Kembali ke Detail
-          </button>
-          <h3>{book.title}</h3>
-        </div>
-        <div className="reader-content">
-          <iframe
-            src={`https://docs.google.com/viewer?url=${encodeURIComponent(book.cover_image || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf')}&embedded=true`}
-            width="100%"
-            height="100%"
-            frameBorder="0"
-          />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="book-detail-container">
       {/* Breadcrumb */}
@@ -162,18 +149,32 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
           <h1 className="detail-title">{book.title}</h1>
           
           <div className="detail-actions">
-            <button className="btn btn-warning btn-large" onClick={() => setShowReader(true)}>
-              📥 Unduh PDF
+            <FavoriteButton bookId={bookId} />
+            
+            <button 
+              className="btn btn-primary btn-large" 
+              onClick={async () => {
+                const pdfUrl = book.pdf_url || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+                
+                // Record download if user is authenticated
+                const token = localStorage.getItem('token');
+                if (token) {
+                  try {
+                    await axios.post(
+                      `http://localhost:8000/api/books/${bookId}/download`,
+                      {},
+                      { headers: { Authorization: `Bearer ${token}` } }
+                    );
+                  } catch (error) {
+                    console.error('Error recording download:', error);
+                  }
+                }
+                
+                window.open(pdfUrl, '_blank');
+              }}
+            >
+              Baca Online
             </button>
-            <button className="btn btn-primary btn-large" onClick={() => setShowReader(true)}>
-              📖 Baca Online
-            </button>
-          </div>
-
-          <div className="detail-downloads">
-            <span className="download-icon">ℹ️</span>
-            <span>Telah di-unduh <strong>{Math.floor(Math.random() * 10000)}</strong> kali</span>
-            <a href="#" className="report-link">Lapor disini</a> jika menemukan kesalahan pada buku
           </div>
 
           <div className="detail-info-section">
@@ -209,16 +210,6 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
                 <div className="info-label">Genre</div>
                 <div className="info-value">{book.genre || 'Umum'}</div>
               </div>
-              
-              <div className="info-row">
-                <div className="info-label">Stok</div>
-                <div className="info-value">{book.stock} unit</div>
-              </div>
-              
-              <div className="info-row">
-                <div className="info-label">Harga</div>
-                <div className="info-value">Rp {parseFloat(book.price).toLocaleString('id-ID')}</div>
-              </div>
             </div>
           </div>
 
@@ -228,17 +219,23 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
               <p>{book.description}</p>
             </div>
           )}
+          
+          {/* Star Rating Section */}
+          <div className="rating-section">
+            <h2 className="section-title">RATING & ULASAN</h2>
+            <StarRating bookId={bookId} />
+          </div>
 
           {/* Admin Actions */}
-          {isAuthenticated && (
+          {isAuthenticated && user?.role === 'admin' && (
             <div className="detail-admin-actions">
               <h3>Admin Actions</h3>
               <div className="admin-buttons">
                 <button className="btn btn-warning" onClick={handleEditClick}>
-                  ✏️ Edit Buku
+                  Edit Buku
                 </button>
                 <button className="btn btn-danger" onClick={handleDelete}>
-                  🗑️ Hapus Buku
+                  Hapus Buku
                 </button>
               </div>
             </div>
@@ -307,32 +304,21 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Genre</label>
-                  <select
-                    name="genre"
-                    value={editForm.genre}
-                    onChange={handleEditChange}
-                  >
-                    <option value="">Pilih Genre</option>
-                    <option value="Fiksi">Fiksi</option>
-                    <option value="Non-Fiksi">Non-Fiksi</option>
-                    <option value="Sains">Sains</option>
-                    <option value="Teknologi">Teknologi</option>
-                    <option value="Sejarah">Sejarah</option>
-                    <option value="Biografi">Biografi</option>
-                    <option value="Self-Help">Self-Help</option>
-                    <option value="Bisnis">Bisnis</option>
-                    <option value="Anak-Anak">Anak-Anak</option>
-                    <option value="Pendidikan">Pendidikan</option>
-                  </select>
-                </div>
-                
-                <div className="form-group">
                   <label>Cover Image URL</label>
                   <input
                     type="url"
                     name="cover_image"
                     value={editForm.cover_image}
+                    onChange={handleEditChange}
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>PDF URL</label>
+                  <input
+                    type="url"
+                    name="pdf_url"
+                    value={editForm.pdf_url}
                     onChange={handleEditChange}
                   />
                 </div>
@@ -347,19 +333,6 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
                     value={editForm.stock}
                     onChange={handleEditChange}
                     min="0"
-                    required
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <label>Harga (Rp) *</label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={editForm.price}
-                    onChange={handleEditChange}
-                    min="0"
-                    step="0.01"
                     required
                   />
                 </div>

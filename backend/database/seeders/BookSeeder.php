@@ -29,8 +29,8 @@ class BookSeeder extends Seeder
                 'genre' => $faker->randomElement($genres),
                 'description' => $faker->paragraph(rand(3, 6)),
                 'cover_image' => 'https://picsum.photos/seed/' . $i . '/400/600',
-                'stock' => $faker->numberBetween(0, 50),
-                'price' => $faker->randomFloat(2, 50000, 500000)
+                'pdf_url' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                'stock' => $faker->numberBetween(0, 50)
             ]);
         }
     }

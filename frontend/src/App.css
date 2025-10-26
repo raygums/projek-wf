@@ -105,6 +105,76 @@ html, body {
   background: #3498db;
 }
 
+/* Dropdown Styles */
+.navbar-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  margin-left: 0.3rem;
+  transition: transform 0.3s;
+}
+
+.navbar-dropdown:hover .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: dropdownFade 0.2s ease-in-out;
+}
+
+/* Add pseudo element to bridge the gap */
+.navbar-dropdown::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 0.5rem;
+  background: transparent;
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  padding: 0.8rem 1.2rem;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background: #E8F4F8;
+  color: #3498db;
+  padding-left: 1.5rem;
+}
+
 .navbar-user {
   display: flex;
   align-items: center;

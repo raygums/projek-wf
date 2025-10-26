@@ -15,7 +15,6 @@ function BookCard({ book, isAuthenticated, onDelete, onEdit, onView }) {
         {book.isbn && <p className="book-isbn">ISBN: {book.isbn}</p>}
         <div className="book-details">
           <span className="book-stock">📦 {book.stock}</span>
-          <span className="book-price">Rp {parseFloat(book.price).toLocaleString('id-ID')}</span>
         </div>
         {isAuthenticated && (
           <div className="book-actions" onClick={(e) => e.stopPropagation()}>

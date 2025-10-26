@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Navbar from './components/Navbar';
 import AddBook from './components/AddBook';
+import Favorites from './components/Favorites';
 import axios from 'axios';
 
 // Set base URL for axios
@@ -20,6 +21,7 @@ function App() {
   const [selectedBookId, setSelectedBookId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState('title');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
     // Check if user is logged in
@@ -73,6 +75,13 @@ function App() {
   const handleSearch = (query, type) => {
     setSearchQuery(query);
     setSearchType(type);
+    setSelectedCategory(''); // Reset category when searching
+    setCurrentPage('books');
+  };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+    setSearchQuery(''); // Reset search when selecting category
     setCurrentPage('books');
   };
 
@@ -90,6 +99,7 @@ function App() {
           onViewBook={handleViewBook}
           initialSearchQuery={searchQuery}
           initialSearchType={searchType}
+          initialCategory={selectedCategory}
         />;
       case 'book-detail':
         return <BookDetail 
@@ -98,7 +108,17 @@ function App() {
           isAuthenticated={isAuthenticated}
         />;
       case 'add-book':
-        return <AddBook onSuccess={handleBookAdded} />;
+        return <AddBook 
+          onSuccess={handleBookAdded}
+          onCancel={() => setCurrentPage('books')}
+        />;
+      case 'favorites':
+        return <Favorites 
+          onBookClick={(bookId) => {
+            setSelectedBookId(bookId);
+            setCurrentPage('book-detail');
+          }}
+        />;
       case 'login':
         return <Login onLogin={handleLogin} onSwitchToRegister={() => setCurrentPage('register')} />;
       case 'register':
@@ -116,6 +136,7 @@ function App() {
         onNavigate={setCurrentPage}
         onLogout={handleLogout}
         currentPage={currentPage}
+        onCategorySelect={handleCategorySelect}
       />
       <main className="main-content">
         {renderPage()}
