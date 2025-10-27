@@ -192,15 +192,34 @@ function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '
           <p className="no-books">Tidak ada buku ditemukan.</p>
         ) : (
           books.map((book) => (
-            <BookCard
-              key={book.id}
-              book={book}
-              isAuthenticated={isAuthenticated}
-              userRole={userRole}
-              onDelete={handleDelete}
-              onEdit={handleEdit}
-              onView={onViewBook}
-            />
+            <div key={book.id} style={{ position: 'relative' }}>
+              <BookCard
+                book={book}
+                isAuthenticated={isAuthenticated}
+                userRole={userRole}
+                onDelete={handleDelete}
+                onView={onViewBook}
+              />
+              {isAuthenticated && userRole === 'admin' && (
+                <button 
+                  className="btn btn-warning btn-edit-overlay"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(book);
+                  }}
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    zIndex: 10,
+                    padding: '8px 12px',
+                    fontSize: '14px'
+                  }}
+                >
+                  ✏️ Edit
+                </button>
+              )}
+            </div>
           ))
         )}
       </div>
@@ -262,6 +281,14 @@ function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '
                 />
               </div>
               <div className="form-group">
+                <label>ISBN</label>
+                <input
+                  type="text"
+                  value={selectedBook.isbn || ''}
+                  onChange={(e) => setSelectedBook({ ...selectedBook, isbn: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
                 <label>Genre</label>
                 <input
                   type="text"
@@ -270,26 +297,29 @@ function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '
                 />
               </div>
               <div className="form-group">
-                <label>Price</label>
-                <input
-                  type="number"
-                  value={selectedBook.price}
-                  onChange={(e) => setSelectedBook({ ...selectedBook, price: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label>Stock</label>
-                <input
-                  type="number"
-                  value={selectedBook.stock}
-                  onChange={(e) => setSelectedBook({ ...selectedBook, stock: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
                 <label>Description</label>
                 <textarea
                   value={selectedBook.description || ''}
                   onChange={(e) => setSelectedBook({ ...selectedBook, description: e.target.value })}
+                  rows="4"
+                />
+              </div>
+              <div className="form-group">
+                <label>Cover Image URL</label>
+                <input
+                  type="text"
+                  value={selectedBook.cover_image || ''}
+                  onChange={(e) => setSelectedBook({ ...selectedBook, cover_image: e.target.value })}
+                  placeholder="https://example.com/cover.jpg"
+                />
+              </div>
+              <div className="form-group">
+                <label>PDF URL</label>
+                <input
+                  type="text"
+                  value={selectedBook.pdf_url || ''}
+                  onChange={(e) => setSelectedBook({ ...selectedBook, pdf_url: e.target.value })}
+                  placeholder="https://example.com/book.pdf"
                 />
               </div>
               <div className="modal-buttons">
