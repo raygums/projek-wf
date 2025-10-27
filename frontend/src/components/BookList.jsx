@@ -18,7 +18,6 @@ function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '
   const [showEditModal, setShowEditModal] = useState(false);
   const [userRole, setUserRole] = useState(null);
 
-  // Get user role from localStorage
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) {
@@ -27,7 +26,6 @@ function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '
     }
   }, []);
 
-  // Update search when initialSearchQuery changes
   useEffect(() => {
     if (initialSearchQuery) {
       setSearch(initialSearchQuery);
@@ -35,7 +33,6 @@ function BookList({ isAuthenticated, refresh, onViewBook, initialSearchQuery = '
     }
   }, [initialSearchQuery, initialSearchType]);
 
-  // Update genre when initialCategory changes
   useEffect(() => {
     if (initialCategory) {
       setGenre(initialCategory);

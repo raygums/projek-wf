@@ -23,7 +23,6 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
   useEffect(() => {
     fetchBookDetail();
     
-    // Get user data from localStorage
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
@@ -35,7 +34,6 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
       const response = await axios.get(`/books/${bookId}`);
       if (response.data.success) {
         setBook(response.data.data);
-        // Set form data for editing
         setEditForm({
           title: response.data.data.title || '',
           author: response.data.data.author || '',
@@ -90,7 +88,7 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
       if (response.data.success) {
         alert('Buku berhasil diupdate!');
         setShowEditModal(false);
-        fetchBookDetail(); // Refresh data
+        fetchBookDetail();
       }
     } catch (error) {
       alert('Gagal mengupdate buku. ' + (error.response?.data?.message || ''));
@@ -154,7 +152,6 @@ function BookDetail({ bookId, onBack, isAuthenticated }) {
               onClick={async () => {
                 const pdfUrl = book.pdf_url || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
                 
-                // Record download if user is authenticated
                 const token = localStorage.getItem('token');
                 if (token) {
                   try {

@@ -8,9 +8,9 @@ import Register from './components/Register';
 import Navbar from './components/Navbar';
 import AddBook from './components/AddBook';
 import Favorites from './components/Favorites';
+import AdminUsers from './components/AdminUsers';
 import axios from 'axios';
 
-// Set base URL for axios
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 
 function App() {
@@ -24,7 +24,6 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
-    // Check if user is logged in
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     
@@ -75,13 +74,13 @@ function App() {
   const handleSearch = (query, type) => {
     setSearchQuery(query);
     setSearchType(type);
-    setSelectedCategory(''); // Reset category when searching
+    setSelectedCategory('');
     setCurrentPage('books');
   };
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-    setSearchQuery(''); // Reset search when selecting category
+    setSearchQuery('');
     setCurrentPage('books');
   };
 
@@ -119,6 +118,8 @@ function App() {
             setCurrentPage('book-detail');
           }}
         />;
+      case 'admin-users':
+        return <AdminUsers />;
       case 'login':
         return <Login onLogin={handleLogin} onSwitchToRegister={() => setCurrentPage('register')} />;
       case 'register':

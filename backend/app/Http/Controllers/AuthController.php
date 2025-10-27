@@ -12,9 +12,6 @@ use App\Mail\WelcomeEmail;
 
 class AuthController extends Controller
 {
-    /**
-     * Register a new user
-     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -34,16 +31,14 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user' // Default role is user
+            'role' => 'user'
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Send welcome email (nilai tambah)
         try {
             Mail::to($user->email)->send(new WelcomeEmail($user));
         } catch (\Exception $e) {
-            // Log error but don't fail registration
             \Log::error('Failed to send welcome email: ' . $e->getMessage());
         }
 
@@ -58,9 +53,6 @@ class AuthController extends Controller
         ], 201);
     }
 
-    /**
-     * Login user
-     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -96,9 +88,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Logout user
-     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -109,9 +98,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Get authenticated user
-     */
     public function me(Request $request)
     {
         return response()->json([

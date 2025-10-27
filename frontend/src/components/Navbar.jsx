@@ -22,7 +22,6 @@ function Navbar({ isAuthenticated, user, onNavigate, onLogout, currentPage, onCa
     <nav className="navbar">
       <div className="navbar-brand" onClick={() => onNavigate('home')}>
         <div className="navbar-brand-text">
-          {/* <div className="navbar-brand-title">Sistem Informasi</div> */}
           <div className="navbar-brand-subtitle">Readify.ID</div>
         </div>
       </div>
@@ -75,15 +74,23 @@ function Navbar({ isAuthenticated, user, onNavigate, onLogout, currentPage, onCa
               Favorit Saya
             </a>
             
-            {/* Only show Add Book for admin */}
             {user?.role === 'admin' && (
-              <a 
-                className={`navbar-link ${currentPage === 'add-book' ? 'active' : ''}`}
-                onClick={() => onNavigate('add-book')}
-              >
-                Add Book
-                <span className="badge-new">Admin</span>
-              </a>
+              <>
+                <a 
+                  className={`navbar-link ${currentPage === 'add-book' ? 'active' : ''}`}
+                  onClick={() => onNavigate('add-book')}
+                >
+                  Add Book
+                  <span className="badge-new">Admin</span>
+                </a>
+                <a 
+                  className={`navbar-link ${currentPage === 'admin-users' ? 'active' : ''}`}
+                  onClick={() => onNavigate('admin-users')}
+                >
+                  Kelola User
+                  <span className="badge-new">Admin</span>
+                </a>
+              </>
             )}
             
             <div className="navbar-user">
